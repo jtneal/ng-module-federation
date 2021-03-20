@@ -1,0 +1,192 @@
+version: 2.1
+
+############################################################
+# Shared Jobs and Configuration
+############################################################
+
+executors:
+  node-executor:
+    docker:
+      - image: circleci/node:14-browsers
+    working_directory: ~/app
+
+commands:
+  attach-workspace-step:
+    steps:
+      - attach_workspace:
+          at: ~/
+  persist-workspace-step:
+    steps:
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app
+
+############################################################
+# Workflow
+############################################################
+
+workflows:
+  version: 2.1
+  pipeline:
+    jobs:
+      - install:
+          filters:
+            tags:
+              only: /^v.*/
+      - lint:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /^v.*/
+      - unit-test:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /^v.*/
+      - e2e-test:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /^v.*/
+      - sonar-scanner:
+          requires:
+            - unit-test
+          filters:
+            tags:
+              only: /^v.*/
+      - publish:
+          context: 'prod-jneal-npm'
+          requires:
+            - lint
+            - e2e-test
+            - sonar-scanner
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+
+############################################################
+# Jobs
+############################################################
+
+jobs:
+
+  install:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          name: Reset Main Branch
+          command: |
+            if ["$CIRCLE_BRANCH" != "main"]; then
+              git branch -f main origin/main
+            fi
+      - restore_cache:
+          keys:
+            - node-dependencies-{{ checksum "package-lock.json" }}
+            - node-dependencies-
+      - run:
+          environment:
+            NG_CLI_ANALYTICS: ci
+          name: Restore packages
+          command: npm install
+      - run:
+          name: Disable Analytics
+          command: npx ng analytics off
+      - run:
+          name: Precompile Angular libraries
+          command: npx ngcc
+      - save_cache:
+          key: node-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - persist-workspace-step
+
+  lint:
+    executor: node-executor
+    steps:
+      - attach-workspace-step
+      - run:
+          name: Lint code
+          command: npm run lint
+
+  unit-test:
+    executor: node-executor
+    steps:
+      - attach-workspace-step
+      - run:
+          name: Run unit tests
+          command: npm run test:cov
+      - store_test_results:
+          path: ./test-results
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app/coverage
+
+  e2e-test:
+    executor: node-executor
+    steps:
+      - attach-workspace-step
+      - run:
+          name: Run e2e tests
+          command: npm run e2e:ci
+      - store_test_results:
+          path: ./test-results
+
+  sonar-scanner:
+    docker:
+      - image: sonarsource/sonar-scanner-cli
+    working_directory: ~/app
+    steps:
+      - attach-workspace-step
+      - restore_cache:
+          key: sonar-plugins
+      - run:
+          name: Replace coverage paths
+          command: sed -i "s+/home/circleci+/tmp+" coverage/library/lcov.info
+      - run:
+          name: Run sonar scanner
+          command: |
+            sonar-scanner \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.organization=jtneal \
+              -Dsonar.projectKey=jtneal_ng-module-federation \
+              -Dsonar.projectName=ng-module-federation \
+              -Dsonar.projectVersion=$CIRCLE_SHA1 \
+              -Dsonar.branch.name=$CIRCLE_BRANCH
+      - save_cache:
+          paths:
+            - ~/.sonar/cache
+          key: sonar-plugins-{{ epoch }}
+
+  publish:
+    executor: node-executor
+    steps:
+      - attach-workspace-step
+      - run:
+          name: 'Build'
+          command: 'npm run build -- --prod'
+      - run:
+          working_directory: ./dist/library
+          name: 'Version'
+          command: 'npm version $CIRCLE_TAG'
+      - run:
+          working_directory: ./dist/library
+          name: 'Include README'
+          command: 'cp ../../README.md .'
+          
+      - run:
+          working_directory: ./dist/library
+          name: 'Authenticate'
+          command: 'npm set //registry.npmjs.org/:_authToken $NPM_TOKEN'
+      - run:
+          working_directory: ./dist/library
+          name: 'Publish'
+          command: 'npm publish'
