@@ -1,17 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { createMicroFrontendDynamicRoute } from 'projects/library/src/public-api';
 
-import { RouteFactory } from 'projects/library/src/public-api';
+import { microFrontends } from '../micro-frontends';
 
 const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'home',
-  },
-  RouteFactory.createRoute('home', '/assets/examples/home'),
-  RouteFactory.createRoute('about', '/assets/examples/about'),
-  RouteFactory.createRoute('contact', '/assets/examples/contact'),
+  ...Object.keys(microFrontends).map((m) => createMicroFrontendDynamicRoute(microFrontends[m])),
 ];
 
 @NgModule({

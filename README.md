@@ -50,7 +50,7 @@ This package works best on brand new projects. It will automatically build out a
 
 ```sh
 # Create your shell/container
-ng new --routing --strict --style scss --packageManager yarn shell
+ng new --routing --strict --style scss --package-manager yarn shell
 cd shell
 
 # Create your micro frontends
@@ -181,8 +181,6 @@ Lastly, simply create some navigation links that point to these routes:
   </ul>
 </nav>
 ```
-
-
 
 ## Development
 

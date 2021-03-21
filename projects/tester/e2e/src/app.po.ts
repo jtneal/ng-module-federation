@@ -5,7 +5,7 @@ export class AppPage {
     return browser.get(`${browser.baseUrl}${page}`);
   }
 
-  async getTitleText(): Promise<string> {
-    return element(by.css('h1')).getText();
+  async getParagraphText(): Promise<string> {
+    return element(by.css('p')).getText();
   }
 }

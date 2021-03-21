@@ -13,7 +13,10 @@ export class MicroFrontend {
 }
 
 export async function loadMicroFrontend<T = any>(microFrontend: MicroFrontend): Promise<T> {
-  return await lookupExposedModule<T>(microFrontend.remoteName, microFrontend.exposedModule);
+  return lookupExposedModule<T>(
+    microFrontend.remoteName,
+    microFrontend.exposedModule,
+  ).then((m) => m[microFrontend.ngModuleName]);
 }
 
 export function createMicroFrontendRoute(path: string, microFrontend: MicroFrontend): Route {

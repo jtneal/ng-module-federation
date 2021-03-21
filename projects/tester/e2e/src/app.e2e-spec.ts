@@ -11,17 +11,17 @@ describe('workspace-project App', () => {
 
   it('should display home title', async () => {
     await page.navigateTo('home');
-    expect(await page.getTitleText()).toEqual('Home');
+    expect(await page.getParagraphText()).toEqual('home works!');
   });
 
   it('should display about title', async () => {
     await page.navigateTo('about');
-    expect(await page.getTitleText()).toEqual('About');
+    expect(await page.getParagraphText()).toEqual('about works!');
   });
 
   it('should display contact title', async () => {
     await page.navigateTo('contact');
-    expect(await page.getTitleText()).toEqual('Contact');
+    expect(await page.getParagraphText()).toEqual('contact works!');
   });
 
   afterEach(async () => {

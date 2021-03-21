@@ -42,7 +42,7 @@ export async function initRemote(remoteName: string): Promise<Container> {
 
   // Do we still need to initialize the remote?
   if (remoteMap[remoteName]) {
-    return container;
+    return;
   }
 
   // Do we still need to initialize the share scope?
