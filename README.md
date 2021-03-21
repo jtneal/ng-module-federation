@@ -74,11 +74,11 @@ ng add ng-module-federation --project mfe3 --type micro --port 4230 --minimal
 ng add ng-module-federation --project shell --type shell --port 4200 --minimal
 ```
 
-Also, so far, all of this assumes all of your applications are in the same repo. However, that is not a hard requirement. The automation works best in monorepos, but can certainly be adapted to having separate repos for each application. In the future, I will provide example repos for both approaches.
+Also, so far, all of this assumes all of your applications are in the same repo. However, that is not a hard requirement. The automation works best in monorepos, but can certainly be adapted to having separate repos for each application. If you want to see a demo of what this project would look like after running these commands, here's a demo I have created:
+
+https://github.com/jtneal/ng-module-federation-demo
 
 ## Getting Started
-
-
 
 If you installed everything as described above without the minimal flag, you should now be ready to go.
 
@@ -106,7 +106,6 @@ export const microFrontends = {
   mfe2: new MicroFrontend('http://localhost:4220/remoteEntry.js', 'mfe2', 'mfe2', 'Mfe2Module'),
   mfe3: new MicroFrontend('http://localhost:4230/remoteEntry.js', 'mfe3', 'mfe3', 'Mfe3Module'),
 };
-
 ```
 
 These values are dynamically pulled into your `main.ts` file and your `app-routing.module.ts` file.
@@ -186,17 +185,21 @@ Lastly, simply create some navigation links that point to these routes:
 
 ### Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npm run build` to build the project and schematics.
 
 ### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npm run test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 If you want to use a headless browser, and generate coverage, use `npm run test:cov` instead.
 
+### Running schematics tests
+
+Run `npm run test:schematics` to execute the schematics tests.
+
 ### Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 If you want to use a headless browser, use `npm run e2e:ci` instead.
 
