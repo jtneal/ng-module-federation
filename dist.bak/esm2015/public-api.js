@@ -1,6 +1,0 @@
-/*
- * Public API Surface of library
- */
-export * from './lib/module-federation';
-export * from './lib/micro-frontend';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL2xpYnJhcnkvc3JjL3B1YmxpYy1hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxjQUFjLHlCQUF5QixDQUFDO0FBQ3hDLGNBQWMsc0JBQXNCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogUHVibGljIEFQSSBTdXJmYWNlIG9mIGxpYnJhcnlcbiAqL1xuXG5leHBvcnQgKiBmcm9tICcuL2xpYi9tb2R1bGUtZmVkZXJhdGlvbic7XG5leHBvcnQgKiBmcm9tICcuL2xpYi9taWNyby1mcm9udGVuZCc7XG4iXX0=
