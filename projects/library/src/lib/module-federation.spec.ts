@@ -42,13 +42,13 @@ describe('Module Federation', () => {
     window.__webpack_init_sharing__ = () => Promise.resolve();
     window.__webpack_share_scopes__ = { default: 'default' };
 
-    // First init should create
+    // init remote and shared scope
     expect(await initRemote(remoteName)).toEqual(window[remoteName]);
 
-    // Second init should pull from cache
+    // no init
     expect(await initRemote(remoteName)).toEqual(window[remoteName]);
 
-    // Third init for new module should create
+    // init remote, not shared scope
     expect(await initRemote(remoteEntry)).toEqual(window[remoteEntry]);
   });
 

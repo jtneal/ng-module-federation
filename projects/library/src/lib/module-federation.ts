@@ -41,18 +41,16 @@ export async function initRemote(remoteName: string): Promise<Container> {
   const container = window[remoteName] as Container;
 
   // Do we still need to initialize the remote?
-  if (remoteMap[remoteName]) {
-    return;
-  }
+  if (!remoteMap[remoteName]) {
+    // Do we still need to initialize the share scope?
+    if (!isDefaultScopeInitialized) {
+      await __webpack_init_sharing__('default');
+      isDefaultScopeInitialized = true;
+    }
 
-  // Do we still need to initialize the share scope?
-  if (!isDefaultScopeInitialized) {
-    await __webpack_init_sharing__('default');
-    isDefaultScopeInitialized = true;
+    await container.init(__webpack_share_scopes__.default);
+    remoteMap[remoteName] = true;
   }
-
-  await container.init(__webpack_share_scopes__.default);
-  remoteMap[remoteName] = true;
 
   return container;
 }

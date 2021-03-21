@@ -16,26 +16,26 @@ describe('Micro Frontend', () => {
   });
 
   it('should load micro frontend', async () => {
-    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => true) };
+    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => ({ ngModuleName: true })) };
 
     expect(await loadMicroFrontend<boolean>(microFrontend)).toBeTruthy();
   });
 
-  it('should create micro frontend route', () => {
-    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => true) };
+  it('should create micro frontend route', async () => {
+    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => ({ ngModuleName: true })) };
 
     const route = createMicroFrontendRoute('path', microFrontend);
 
-    expect((route as any).loadChildren()).toBeTruthy();
+    expect(await (route as any).loadChildren()).toBeTruthy();
     expect(Object.keys(route)).toEqual(['loadChildren', 'path']);
   });
 
-  it('should create micro frontend dynamic route', () => {
-    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => true) };
+  it('should create micro frontend dynamic route', async () => {
+    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => ({ ngModuleName: true })) };
 
     const route = createMicroFrontendDynamicRoute(microFrontend);
 
-    expect((route as any).loadChildren()).toBeTruthy();
+    expect(await (route as any).loadChildren()).toBeTruthy();
     expect(Object.keys(route)).toEqual(['loadChildren', 'path']);
   });
 });
