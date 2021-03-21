@@ -12,6 +12,10 @@ export class MicroFrontend {
   ) { }
 }
 
+export interface MicroFrontendConfig {
+  [key: string]: MicroFrontend;
+}
+
 export async function loadMicroFrontend<T = any>(microFrontend: MicroFrontend): Promise<T> {
   return lookupExposedModule<T>(
     microFrontend.remoteName,
