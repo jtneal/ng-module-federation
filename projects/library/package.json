@@ -2,6 +2,15 @@
   "name": "ng-module-federation",
   "version": "0.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "GitHub",
+    "url": "https://github.com/jtneal/ng-module-federation"
+  },
+  "author": {
+    "name": "Jason Neal",
+    "email": "jason@jneal.com",
+    "url": "https://jneal.com"
+  },
   "scripts": {
     "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
     "copy:schemas": "cp schematics/ng-add/schema.json ../../dist/library/schematics/ng-add/schema.json",
