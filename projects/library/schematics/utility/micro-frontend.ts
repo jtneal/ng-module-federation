@@ -6,15 +6,20 @@ import { Application } from './applications';
 export function addMicroFrontendConfiguration(applications: Application[], sourceRoot: string): Rule {
   return (host: Tree): Tree => {
     const configPath = normalize(`${sourceRoot}/micro-frontends.ts`);
-    const configData = `import { MicroFrontend, MicroFrontendConfig } from 'ng-module-federation';
+    const configData = `import { MicroFrontend } from 'ng-module-federation';
 
-export const microFrontends: MicroFrontendConfig = {
+export const microFrontends: MicroFrontend[] = [
   ${
     applications
-      .map((a) => `${a.property}: new MicroFrontend('http://localhost:${a.port}/remoteEntry.js', '${a.dasherized}', '${a.dasherized}', '${a.classified}Module'),`)
+      .map((a) => `{
+    remoteEntry: 'http://localhost:${a.port}/remoteEntry.js',
+    remoteName: '${a.dasherized}',
+    route: '${a.dasherized}',
+    ngModuleName: '${a.classified}Module',
+  },`)
       .join('\n  ')
   }
-};
+];
 `;
 
     host.create(configPath, configData);

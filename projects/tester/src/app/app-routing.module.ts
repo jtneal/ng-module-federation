@@ -5,7 +5,7 @@ import { createMicroFrontendDynamicRoute } from 'projects/library/src/public-api
 import { microFrontends } from '../micro-frontends';
 
 const routes: Routes = [
-  ...Object.keys(microFrontends).map((m) => createMicroFrontendDynamicRoute(microFrontends[m])),
+  ...microFrontends.map((m) => createMicroFrontendDynamicRoute(m)),
 ];
 
 @NgModule({

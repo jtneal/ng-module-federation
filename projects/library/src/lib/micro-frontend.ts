@@ -2,24 +2,18 @@ import { Route } from '@angular/router';
 
 import { lookupExposedModule } from './module-federation';
 
-export class MicroFrontend {
-  public constructor(
-    public remoteEntry: string,
-    public remoteName: string,
-    public route: string,
-    public ngModuleName: string,
-    public exposedModule = './Module',
-  ) { }
-}
-
-export interface MicroFrontendConfig {
-  [key: string]: MicroFrontend;
+export interface MicroFrontend {
+  remoteEntry: string;
+  remoteName: string;
+  route: string;
+  ngModuleName: string;
+  exposedModule?: string;
 }
 
 export async function loadMicroFrontend<T = any>(microFrontend: MicroFrontend): Promise<T> {
   return lookupExposedModule<T>(
     microFrontend.remoteName,
-    microFrontend.exposedModule,
+    microFrontend.exposedModule ?? './Module',
   ).then((m) => m[microFrontend.ngModuleName]);
 }
 

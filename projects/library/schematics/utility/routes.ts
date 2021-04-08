@@ -30,7 +30,7 @@ export function addRouteToShell(sourceRoot: string): Rule {
   return (host: Tree): Tree => {
     const modulePath = normalize(`${sourceRoot}/app/app${ROUTING_MODULE_EXT}`);
     const source = ts.createSourceFile(modulePath, host.read(modulePath)?.toString() || '', ts.ScriptTarget.Latest, true);
-    const routes = '...Object.keys(microFrontends).map((m) => createMicroFrontendDynamicRoute(microFrontends[m])),';
+    const routes = '...microFrontends.map((m) => createMicroFrontendDynamicRoute(m))';
 
     const changes = [
       insertImport(source, modulePath, 'createMicroFrontendDynamicRoute', 'ng-module-federation'),

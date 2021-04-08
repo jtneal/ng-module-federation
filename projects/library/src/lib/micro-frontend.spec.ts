@@ -4,11 +4,10 @@ describe('Micro Frontend', () => {
   let microFrontend: MicroFrontend;
 
   beforeEach(() => {
-    microFrontend = new MicroFrontend('remoteEntry', 'remoteName', 'route', 'ngModuleName');
+    microFrontend = { remoteEntry: 'remoteEntry', remoteName: 'remoteName', route: 'route', ngModuleName: 'ngModuleName' };
   });
 
   it('should create micro frontend', () => {
-    expect(microFrontend.exposedModule).toEqual('./Module');
     expect(microFrontend.ngModuleName).toEqual('ngModuleName');
     expect(microFrontend.remoteEntry).toEqual('remoteEntry');
     expect(microFrontend.remoteName).toEqual('remoteName');
@@ -19,6 +18,12 @@ describe('Micro Frontend', () => {
     window[microFrontend.remoteName] = { get: () => Promise.resolve(() => ({ ngModuleName: true })) };
 
     expect(await loadMicroFrontend<boolean>(microFrontend)).toBeTruthy();
+  });
+
+  it('should load micro frontend with custom exposed module', async () => {
+    window[microFrontend.remoteName] = { get: () => Promise.resolve(() => ({ ngModuleName: true })) };
+
+    expect(await loadMicroFrontend<boolean>({ ...microFrontend, exposedModule: './Custom' })).toBeTruthy();
   });
 
   it('should create micro frontend route', async () => {

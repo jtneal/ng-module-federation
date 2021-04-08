@@ -101,11 +101,26 @@ If you add more micro frontends in the future, you'll need to update your micro 
 // micro-frontends.ts
 import { MicroFrontend } from 'ng-module-federation';
 
-export const microFrontends = {
-  mfe1: new MicroFrontend('http://localhost:4210/remoteEntry.js', 'mfe1', 'mfe1', 'Mfe1Module'),
-  mfe2: new MicroFrontend('http://localhost:4220/remoteEntry.js', 'mfe2', 'mfe2', 'Mfe2Module'),
-  mfe3: new MicroFrontend('http://localhost:4230/remoteEntry.js', 'mfe3', 'mfe3', 'Mfe3Module'),
-};
+export const microFrontends: MicroFrontend[] = [
+  {
+    remoteEntry: 'http://localhost:4210/remoteEntry.js',
+    remoteName: 'mfe1',
+    route: 'mfe1',
+    ngModuleName: 'Mfe1Module',
+  },
+  {
+    remoteEntry: 'http://localhost:4220/remoteEntry.js',
+    remoteName: 'mfe2',
+    route: 'mfe2',
+    ngModuleName: 'Mfe2Module',
+  },
+  {
+    remoteEntry: 'http://localhost:4230/remoteEntry.js',
+    remoteName: 'mfe3',
+    route: 'mfe3',
+    ngModuleName: 'Mfe3Module',
+  },
+];
 ```
 
 These values are dynamically pulled into your `main.ts` file and your `app-routing.module.ts` file.
@@ -159,7 +174,7 @@ import { createMicroFrontendRoute } from 'ng-module-federation';
 import { microFrontends } from '../micro-frontends';
 
 const routes: Routes = [
-  ...Object.keys(microFrontends).map((m) => createMicroFrontendDynamicRoute(microFrontends[m])),
+  ...microFrontends.map((m) => createMicroFrontendDynamicRoute(m)),
 ];
 
 @NgModule({
