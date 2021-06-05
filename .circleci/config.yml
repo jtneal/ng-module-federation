@@ -105,7 +105,12 @@ jobs:
           key: node-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      - persist-workspace-step
+            - ~/.cache
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app
+            - .cache
 
   lint:
     executor: node-executor
