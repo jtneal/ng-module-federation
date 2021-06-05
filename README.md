@@ -111,7 +111,7 @@ These values are dynamically pulled into your `main.ts` file and your `app-routi
 If you did a minimal install, you'll have to do some configuration yourself. In your micro frontend applications, you'll need a module to use as your entrypoint that is NOT your AppModule. This module should have a router and a component that is defined for your root path, like so:
 
 ```typescript
-// mfe1-routing.module.ts
+// mfe-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -123,7 +123,7 @@ const routes: Routes = [{ component: Mfe1Component, path: '' }];
   exports: [RouterModule],
   imports: [RouterModule.forChild(routes)],
 })
-export class Mfe1RoutingModule { }
+export class MfeRoutingModule { }
 ```
 
 ```typescript
@@ -138,7 +138,7 @@ import { Mfe1Component } from './mfe1/mfe1.component';
   declarations: [Mfe1Component],
   imports: [
     CommonModule,
-    Mfe1RoutingModule,
+    MfeRoutingModule,
   ]
 })
 export class MfeModule { }
