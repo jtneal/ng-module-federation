@@ -1,0 +1,35 @@
+{
+  "name": "ng-module-federation",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "GitHub",
+    "url": "https://github.com/jtneal/ng-module-federation"
+  },
+  "author": {
+    "name": "Jason Neal",
+    "email": "jason@jneal.com",
+    "url": "https://jneal.com"
+  },
+  "scripts": {
+    "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
+    "copy:schemas": "cp schematics/ng-add/schema.json ../../dist/libs/mfe-library/schematics/ng-add/schema.json",
+    "copy:files": "cp -R schematics/ng-add/files ../../dist/libs/mfe-library/schematics/ng-add",
+    "copy:collection": "cp schematics/collection.json ../../dist/libs/mfe-library/schematics/collection.json",
+    "copy:readme": "cp ../../README.md ../../dist/libs/mfe-library/README.md",
+    "postbuild": "../../node_modules/.bin/run-p copy:*"
+  },
+  "peerDependencies": {
+    "@angular/common": "^12.0.3",
+    "@angular/core": "^12.0.3"
+  },
+  "dependencies": {
+    "@angular-architects/module-federation": "^12.1.1",
+    "ngx-build-plus": "^12.0.1",
+    "tslib": "^2.1.0"
+  },
+  "schematics": "./schematics/collection.json",
+  "ng-add": {
+    "save": "dependencies"
+  }
+}

@@ -1,0 +1,43 @@
+const { SharedMappings } = require('@angular-architects/module-federation/webpack');
+const path = require('path');
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+
+const sharedMappings = new SharedMappings();
+
+sharedMappings.register(
+  path.join(__dirname, '<%= relTsConfigPath %>'),
+  [/* mapped paths to share */],
+);
+
+module.exports = {
+  output: {
+    uniqueName: '<%= project %>',
+    publicPath: 'auto',
+  },
+  optimization: {
+    runtimeChunk: false,
+  },
+  resolve: {
+    alias: {
+      ...sharedMappings.getAliases(),
+    },
+  },
+  plugins: [
+    new ModuleFederationPlugin({<% if (isShell) { %>
+      remotes: {},<% } else { %>
+      name: '<%= project %>',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './Module': './<%= root %>/src/app/mfe.module.ts',
+      },<% } %>
+      shared: {
+        '@angular/core': { singleton: true, strictVersion: true },
+        '@angular/common': { singleton: true, strictVersion: true },
+        '@angular/common/http': { singleton: true, strictVersion: true },
+        '@angular/router': { singleton: true, strictVersion: true },
+        ...sharedMappings.getDescriptors(),
+      },
+    }),
+    sharedMappings.getPlugin(),
+  ],
+};

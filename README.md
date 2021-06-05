@@ -6,12 +6,12 @@
 
 # Angular Module Federation
 
-A library for building run-time compilation micro frontends with Webpack 5 module federation using Angular.
+A library for building run-time compilation micro frontends with Webpack Module Federation using Angular.
 
 ## Table of Contents
 
 - [Acknowledgement](#acknowledgement)
-- [Webpack 5](#webpack-5)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Development](#development)
@@ -23,26 +23,10 @@ A library for building run-time compilation micro frontends with Webpack 5 modul
 
 I must give credit where it is due. Most of this package is based on and inspired by `@angular-architects/module-federation` by [Manfred Steyer](https://twitter.com/ManfredSteyer). Manfred's package has lots of different options that you can choose from. However, I wanted to provide a more opinionated and concrete implementation that people who just want to get up and running quickly can try out.
 
-## Webpack 5
+## Prerequisites
 
-Module federation requres Webpack 5, which in turn requires Angular 11+.
-
-In order to use Webpack 5 with Angular, you must opt-in using **yarn**.
-
-- Existing Projects: `ng config -g cli.packageManager yarn`
-- New Projects: `ng new workspace-name --packageManager yarn`
-
-Our installation process will take care of the rest, but for reference purposes, we will add this to your package.json:
-
-```json
-"resolutions": {
-  "webpack": "^5.4.0"
-}
-```
-
-Then we will run **yarn** to install all required packages.
-
-Please note that Webpack 5 support is still considered experimental in Angular 11. According to the road map, it should be production ready with Angular 12, but I believe it will still require you to opt-in until at least Angular 13.
+- Module Federation requires Webpack 5+
+- Angular's support of Webpack 5 requires Angular 12+
 
 ## Installation
 
@@ -50,7 +34,7 @@ This package works best on brand new projects. It will automatically build out a
 
 ```sh
 # Create your shell/container
-ng new --routing --strict --style scss --package-manager yarn shell
+ng new --routing --style scss shell
 cd shell
 
 # Create your micro frontends
@@ -83,7 +67,7 @@ https://github.com/jtneal/ng-module-federation-demo
 If you installed everything as described above without the minimal flag, you should now be ready to go.
 
 ```sh
-npm start
+npm run run:all
 ```
 
 This will start up all of your applications in parallel. If you followed my example above:
@@ -105,20 +89,17 @@ export const microFrontends: MicroFrontend[] = [
   {
     remoteEntry: 'http://localhost:4210/remoteEntry.js',
     remoteName: 'mfe1',
-    route: 'mfe1',
-    ngModuleName: 'Mfe1Module',
+    routePath: 'mfe1',
   },
   {
     remoteEntry: 'http://localhost:4220/remoteEntry.js',
     remoteName: 'mfe2',
-    route: 'mfe2',
-    ngModuleName: 'Mfe2Module',
+    routePath: 'mfe2',
   },
   {
     remoteEntry: 'http://localhost:4230/remoteEntry.js',
     remoteName: 'mfe3',
-    route: 'mfe3',
-    ngModuleName: 'Mfe3Module',
+    routePath: 'mfe3',
   },
 ];
 ```
@@ -146,12 +127,12 @@ export class Mfe1RoutingModule { }
 ```
 
 ```typescript
-// mfe1.module.ts
+// mfe.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Mfe1RoutingModule } from './mfe1-routing.module';
-import { Mfe1Component } from './mfe1.component';
+import { MfeRoutingModule } from './mfe-routing.module';
+import { Mfe1Component } from './mfe1/mfe1.component';
 
 @NgModule({
   declarations: [Mfe1Component],
@@ -160,7 +141,7 @@ import { Mfe1Component } from './mfe1.component';
     Mfe1RoutingModule,
   ]
 })
-export class Mfe1Module { }
+export class MfeModule { }
 ```
 
 Then, in your shell, you'll need to define your routes that point to the micro frontends:
@@ -174,7 +155,7 @@ import { createMicroFrontendRoute } from 'ng-module-federation';
 import { microFrontends } from '../micro-frontends';
 
 const routes: Routes = [
-  ...microFrontends.map((m) => createMicroFrontendDynamicRoute(m)),
+  ...createMicroFrontendRoutes(microFrontends),
 ];
 
 @NgModule({
@@ -204,9 +185,7 @@ Run `npm run build` to build the project and schematics.
 
 ### Running unit tests
 
-Run `npm run test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-If you want to use a headless browser, and generate coverage, use `npm run test:cov` instead.
+Run `npm run test` to execute the unit tests.
 
 ### Running schematics tests
 
@@ -214,17 +193,13 @@ Run `npm run test:schematics` to execute the schematics tests.
 
 ### Running end-to-end tests
 
-Run `npm run e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `npm run e2e` to execute the end-to-end tests.
 
-If you want to use a headless browser, use `npm run e2e:ci` instead.
+If you want to use a headless browser, use `npm run e2e:headless` instead.
 
 ### Running the tester app
 
-The workspace includes a tester application that can be used to test out features of the SDK. Run this using `ng serve tester` and browse to http://localhost:4200.
-
-### Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+The workspace includes a tester application that can be used to test out features of the SDK. Run this using `ng serve mfe-tester` and browse to http://localhost:4200.
 
 ## Contributing
 

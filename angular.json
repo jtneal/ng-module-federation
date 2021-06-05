@@ -1,174 +1,213 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "mfe-library",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
   "projects": {
-    "library": {
-      "projectType": "library",
-      "root": "projects/library",
-      "sourceRoot": "projects/library/src",
-      "prefix": "lib",
+    "mfe-tester": {
+      "projectType": "application",
+      "root": "apps/mfe-tester",
+      "sourceRoot": "apps/mfe-tester/src",
+      "prefix": "ng-module-federation",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "ngx-build-plus:browser",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
-            "tsConfig": "projects/library/tsconfig.lib.json",
-            "project": "projects/library/ng-package.json"
+            "outputPath": "dist/apps/mfe-tester",
+            "index": "apps/mfe-tester/src/index.html",
+            "main": "apps/mfe-tester/src/main.ts",
+            "polyfills": "apps/mfe-tester/src/polyfills.ts",
+            "tsConfig": "apps/mfe-tester/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/mfe-tester/src/favicon.ico",
+              "apps/mfe-tester/src/assets"
+            ],
+            "styles": [
+              "apps/mfe-tester/src/styles.scss"
+            ],
+            "scripts": [],
+            "extraWebpackConfig": "apps/mfe-tester/webpack.prod.config.js"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/library/tsconfig.lib.prod.json"
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/mfe-tester/src/environments/environment.ts",
+                  "with": "apps/mfe-tester/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "extraWebpackConfig": "apps/mfe-tester/webpack.prod.config.js"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "extraWebpackConfig": "apps/mfe-tester/webpack.config.js"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "mfe-tester:build:production",
+              "extraWebpackConfig": "apps/mfe-tester/webpack.prod.config.js"
+            },
+            "development": {
+              "browserTarget": "mfe-tester:build:development",
+              "extraWebpackConfig": "apps/mfe-tester/webpack.config.js"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "main": "projects/library/src/test.ts",
-            "tsConfig": "projects/library/tsconfig.spec.json",
-            "karmaConfig": "projects/library/karma.conf.js"
+            "browserTarget": "mfe-tester:build"
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/library/tsconfig.lib.json",
-              "projects/library/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "apps/mfe-tester/src/**/*.ts",
+              "apps/mfe-tester/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:karma",
+          "outputs": [
+            "coverage/apps/mfe-tester"
+          ],
+          "options": {
+            "jestConfig": "apps/mfe-tester/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "mfe-tester-e2e": {
+      "root": "apps/mfe-tester-e2e",
+      "sourceRoot": "apps/mfe-tester-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/mfe-tester-e2e/cypress.json",
+            "tsConfig": "apps/mfe-tester-e2e/tsconfig.e2e.json",
+            "devServerTarget": "mfe-tester:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "mfe-tester:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/mfe-tester-e2e/**/*.{js,ts}"
             ]
           }
         }
       }
     },
-    "tester": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "projects/tester",
-      "sourceRoot": "projects/tester/src",
-      "prefix": "app",
+    "mfe-library": {
+      "projectType": "library",
+      "root": "libs/mfe-library",
+      "sourceRoot": "libs/mfe-library/src",
+      "prefix": "ng-module-federation",
       "architect": {
         "build": {
-          "builder": "ngx-build-plus:browser",
+          "builder": "@nrwl/angular:package",
+          "outputs": [
+            "dist/libs/mfe-library"
+          ],
           "options": {
-            "outputPath": "dist/tester",
-            "index": "projects/tester/src/index.html",
-            "main": "projects/tester/src/main.ts",
-            "polyfills": "projects/tester/src/polyfills.ts",
-            "tsConfig": "projects/tester/tsconfig.app.json",
-            "aot": true,
-            "assets": [
-              "projects/tester/src/favicon.ico",
-              "projects/tester/src/assets"
-            ],
-            "styles": [
-              "projects/tester/src/styles.scss"
-            ],
-            "scripts": [],
-            "extraWebpackConfig": "projects/tester/webpack.config.js"
+            "project": "libs/mfe-library/ng-package.json"
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/tester/src/environments/environment.ts",
-                  "with": "projects/tester/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "extraWebpackConfig": "projects/tester/webpack.prod.config.js"
+              "tsConfig": "libs/mfe-library/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/mfe-library/tsconfig.lib.json"
             }
-          }
-        },
-        "serve": {
-          "builder": "ngx-build-plus:dev-server",
-          "options": {
-            "browserTarget": "tester:build",
-            "extraWebpackConfig": "projects/tester/webpack.config.js",
-            "port": 4200
           },
-          "configurations": {
-            "production": {
-              "browserTarget": "tester:build:production",
-              "extraWebpackConfig": "projects/tester/webpack.prod.config.js"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "tester:build"
-          }
+          "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "ngx-build-plus:karma",
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/mfe-library"
+          ],
           "options": {
-            "main": "projects/tester/src/test.ts",
-            "polyfills": "projects/tester/src/polyfills.ts",
-            "tsConfig": "projects/tester/tsconfig.spec.json",
-            "karmaConfig": "projects/tester/karma.conf.js",
-            "assets": [
-              "projects/tester/src/favicon.ico",
-              "projects/tester/src/assets"
-            ],
-            "styles": [
-              "projects/tester/src/styles.scss"
-            ],
-            "scripts": [],
-            "extraWebpackConfig": "projects/tester/webpack.config.js"
+            "jestConfig": "libs/mfe-library/jest.config.js",
+            "passWithNoTests": true
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@nrwl/linter:eslint",
           "options": {
-            "tsConfig": [
-              "projects/tester/tsconfig.app.json",
-              "projects/tester/tsconfig.spec.json",
-              "projects/tester/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "libs/mfe-library/src/**/*.ts",
+              "libs/mfe-library/src/**/*.html"
             ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/tester/e2e/protractor.conf.js",
-            "devServerTarget": "tester:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "tester:serve:production"
-            }
           }
         }
       }
     }
-  },
-  "defaultProject": "library"
+  }
 }

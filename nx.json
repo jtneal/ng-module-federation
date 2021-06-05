@@ -1,0 +1,33 @@
+{
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "affected": {
+    "defaultBase": "master"
+  },
+  "npmScope": "ng-module-federation",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "projects": {
+    "mfe-tester": {
+      "tags": []
+    },
+    "mfe-tester-e2e": {
+      "tags": [],
+      "implicitDependencies": ["mfe-tester"]
+    },
+    "mfe-library": {
+      "tags": []
+    }
+  }
+}
