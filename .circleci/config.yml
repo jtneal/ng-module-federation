@@ -185,7 +185,7 @@ jobs:
       - run:
           working_directory: ./dist/libs/mfe-library
           name: 'Include README'
-          command: 'cp ../../README.md .'
+          command: 'cp ../../../README.md .'
       - run:
           working_directory: ./dist/libs/mfe-library
           name: 'Authenticate'
