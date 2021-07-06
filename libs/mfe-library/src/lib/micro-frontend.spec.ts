@@ -27,6 +27,14 @@ describe('Micro Frontend', () => {
     expect(Object.keys(route)).toEqual(['loadChildren', 'path']);
   });
 
+  it('should create micro frontend route without defaults', async () => {
+    const route = createMicroFrontendRoute({ ...microFrontend, exposedModule: './Module', moduleName: 'MfeModule' });
+    const loadChildren = route.loadChildren as CallableFunction;
+
+    expect(await loadChildren()).toBeTruthy();
+    expect(Object.keys(route)).toEqual(['loadChildren', 'path']);
+  });
+
   it('should create micro frontend routes', () => {
     const routes = createMicroFrontendRoutes([microFrontend]);
 
