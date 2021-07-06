@@ -1,4 +1,4 @@
-import { loadRemoteEntry, loadRemoteModule } from '@angular-architects/module-federation';
+import { loadRemoteEntry, loadRemoteModule } from '@angular-architects/module-federation-runtime';
 import { Route } from '@angular/router';
 
 export interface MicroFrontend {
