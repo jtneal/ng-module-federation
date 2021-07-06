@@ -1,4 +1,4 @@
-const { SharedMappings } = require('@angular-architects/module-federation/webpack');
+const { share, SharedMappings } = require('@angular-architects/module-federation/webpack');
 const path = require('path');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 
@@ -30,13 +30,13 @@ module.exports = {
       exposes: {
         './Module': './<%= root %>/src/app/mfe.module.ts',
       },<% } %>
-      shared: {
-        '@angular/core': { singleton: true, strictVersion: true },
-        '@angular/common': { singleton: true, strictVersion: true },
-        '@angular/common/http': { singleton: true, strictVersion: true },
-        '@angular/router': { singleton: true, strictVersion: true },
+      shared: share({
+        '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' }, 
+        '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' }, 
+        '@angular/common/http': { singleton: true, strictVersion: true, requiredVersion: 'auto' }, 
+        '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         ...sharedMappings.getDescriptors(),
-      },
+      }),
     }),
     sharedMappings.getPlugin(),
   ],
