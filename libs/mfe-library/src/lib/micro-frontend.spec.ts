@@ -1,5 +1,14 @@
 import { createMicroFrontendRoute, createMicroFrontendRoutes, loadMicroFrontendRemoteEntries, MicroFrontend } from './micro-frontend';
 
+jest.mock('@angular-architects/module-federation-runtime', () => {
+  const originalModule = jest.requireActual('@angular-architects/module-federation-runtime');
+
+  return {
+    ...originalModule,
+    loadRemoteModule: jest.fn().mockReturnValue(Promise.resolve({ MfeModule: true })),
+  }
+});
+
 describe('Micro Frontend', () => {
   let microFrontend: MicroFrontend;
 
