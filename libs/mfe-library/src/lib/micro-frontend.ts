@@ -11,6 +11,7 @@ export interface MicroFrontend {
 
 export const createMicroFrontendRoute = (mfe: MicroFrontend): Route => ({
   loadChildren: () => loadRemoteModule({
+    remoteEntry: mfe.remoteEntry,
     remoteName: mfe.remoteName,
     exposedModule: mfe.exposedModule ?? './Module',
   }).then((m) => m[mfe.moduleName ?? 'MfeModule']),
