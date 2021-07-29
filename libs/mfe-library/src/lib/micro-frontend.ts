@@ -1,15 +1,17 @@
 import { loadRemoteEntry, loadRemoteModule } from '@angular-architects/module-federation-runtime';
-import { Route } from '@angular/router';
+import { Data, Route } from '@angular/router';
 
 export interface MicroFrontend {
   exposedModule?: string;
   moduleName?: string;
   remoteEntry: string;
   remoteName: string;
+  routeData?: Data;
   routePath: string;
 }
 
 export const createMicroFrontendRoute = (mfe: MicroFrontend): Route => ({
+  data: mfe.routeData ?? {},
   loadChildren: () => loadRemoteModule({
     remoteEntry: mfe.remoteEntry,
     remoteName: mfe.remoteName,
